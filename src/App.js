@@ -59,7 +59,7 @@ function App() {
       console.log('error', error);
       setLoading(false);
     });
-  }, []); 
+  },[]); 
 
 
 
@@ -74,7 +74,7 @@ const customIcon = new Icon({
     <div className="App">
       <header className="App-header">
         <div id="box">
-      <MapContainer center={[59.443475262102396, 24.79419282429169]} zoom={13} scrollWheelZoom={false} style={{ height: "100%", width: "100%" }}>
+      <MapContainer center={[59.443475262102396, 24.79419282429169]} zoom={13} scrollWheelZoom={true} style={{ height: "100%", width: "100%" }}>
       <TileLayer
       attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
       url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
