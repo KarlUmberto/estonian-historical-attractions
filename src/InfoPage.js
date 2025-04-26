@@ -4,12 +4,14 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 
 const InfoPage = () => {
-  const { name } = useParams();
+  const { name, info } = useParams();
+  const decodedName = decodeURIComponent(name);
+  const decodedInfo = decodeURIComponent(info);
 
   return (
     <div style={{ padding: '20px' }}>
       <h1>{decodeURIComponent(name)}</h1>
-      <p>Siin tuleb rohkem infot selle ajaloolise koha kohta.</p>
+      <p>{decodeURIComponent(info)}</p>
       <h2>Mängud</h2>
       <ul>
         <li><a href="#">Viktoriin</a></li>

@@ -15,7 +15,7 @@ import {
 import InfoPage from './InfoPage';
 
 const MarkerInfo = ({ marker }) => {
-  const { name, address, phone, openingHours, website, coordinates } = marker;
+  const { name, info, address, phone, openingHours, website, coordinates } = marker;
 
   return (
     <div style={{ marginBottom: '20px', border: '1px solid #ccc', padding: '10px' }}>
@@ -24,8 +24,8 @@ const MarkerInfo = ({ marker }) => {
       <p><strong>Telefon:</strong> {phone}</p>
       <p><strong>Avamisajad:</strong> {openingHours}</p>
       <p><strong>Veebileht:</strong> <a href={website} target="_blank" rel="noopener noreferrer">{website}</a></p>
-      <p><strong>Koordinaadid:</strong> Latitude: {coordinates[1]}, Longitude: {coordinates[0]}</p>
-      <Link to={`/info/${encodeURIComponent(name)}`}>Vaata rohkem ja mängi mänge →</Link>
+      <p><strong>Koordinaadid:</strong> Laiuskraad: {coordinates[1]}, Pikkuskraad: {coordinates[0]}</p>
+      <Link to={`/info/${encodeURIComponent(name)}/${encodeURIComponent(info)}`}>Vaata rohkem ja mängi mänge →</Link>
     </div>
   );
 };
@@ -47,9 +47,9 @@ function App() {
           } else if (geometry && geometry.type === "Point") {
             coordinates = geometry.coordinates;
           }
-
           return {
             name: properties.name,
+            info: properties.info,
             address: properties.address,
             phone: properties.phone,
             openingHours: properties.opening_hours,
@@ -99,7 +99,7 @@ function App() {
             </header>
           </div>
         } />
-        <Route path="/info/:name" element={<InfoPage />} />
+        <Route path="/info/:name/:info" element={<InfoPage />} />
       </Routes>
     </Router>
   );

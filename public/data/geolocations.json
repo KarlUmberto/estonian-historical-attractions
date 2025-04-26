@@ -1024,7 +1024,7 @@
           "source": "http://www.muuseum.ee/et/muuseumid",
           "source:addr": "Maa- ja Ruumiamet 2025",
           "tourism": "museum",
-          "url": "http://www.linnamuuseum.ee/lastemuuseum",
+          "url": "https://linnamuuseum.ee/lastemuuseum-miiamilla/",
           "wheelchair": "no"
         },
         "geometry": {
@@ -8585,12 +8585,14 @@
           "@id": "node/687057497",
           "fee": "yes",
           "name": "Lastemuuseum Miiamilla",
+          "info": "See muuseum tutvustab Eesti ajalugu alates ...",
           "name:en": "Cildrens Museum Miiamilla",
           "opening_hours": "Tu-Su 12:00-18:00",
           "operator": "Tallinna Linnamuuseum",
           "phone": "+372 6017 051",
           "tourism": "museum",
           "url": "https://www.linnamuuseum.ee/lastemuuseum-miiamilla/",
+          "website": "https://www.linnamuuseum.ee/lastemuuseum-miiamilla/",
           "wikidata": "Q16413393"
         },
         "geometry": {
@@ -10360,6 +10362,7 @@
           "addr:street": "Jaan Poska",
           "museum": "person",
           "name": "Mati Undi muuseum",
+          "info": "Kes on Mati Unt - ",
           "name:en": "The Museum of Mati Unt",
           "opening_hours": "Tu-Sa 11:00-17:00",
           "operator": "Tallinna Kirjanduskeskus",
