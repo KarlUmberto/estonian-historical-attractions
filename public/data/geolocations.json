@@ -471,7 +471,8 @@
           "tourism": "museum",
           "website": "https://kumu.ekm.ee/",
           "wheelchair": "yes",
-          "wikidata": "Q919611"
+          "wikidata": "Q919611",
+          "info": ""
         },
         "geometry": {
           "type": "Polygon",
@@ -8514,7 +8515,8 @@
           "website": "https://kirjanduskeskus.ee/vilde-muuseum/",
           "wheelchair": "no",
           "wikidata": "Q16408857",
-          "wikipedia": "et:Eduard Vilde muuseum"
+          "wikipedia": "et:Eduard Vilde muuseum",
+          "info": "Muuseum asub Kadrioru lossi endises kastellaani residentsi peahoones. Maja alumise korruse kuuetoalises korteris elas kirjanik, ajakirjanik ja diplomaat Eduard Vilde aastatel 1927–1933."
         },
         "geometry": {
           "type": "Point",
@@ -8585,7 +8587,7 @@
           "@id": "node/687057497",
           "fee": "yes",
           "name": "Lastemuuseum Miiamilla",
-          "info": "See muuseum tutvustab Eesti ajalugu alates ...",
+          "info": "Lastemuuseum Miiamilla on Tallinna Linnamuuseumi allasutus, lastele mõeldud harumuuseum. Muuseumi põhieesmärk on muuta maailma paremaks paigaks, et kõigil elusolendeil ning loodusel oleks hea elada, olles ise suurepäraseks eeskujuks.",
           "name:en": "Cildrens Museum Miiamilla",
           "opening_hours": "Tu-Su 12:00-18:00",
           "operator": "Tallinna Linnamuuseum",

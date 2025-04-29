@@ -66,8 +66,7 @@ function App() {
         console.log('error', error);
         setLoading(false);
       });
-  }, []);
-
+    }, []);
   const customIcon = new Icon({
     iconUrl: require("./marker.png"),
     iconSize: [38, 38]

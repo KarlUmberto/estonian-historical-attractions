@@ -1,0 +1,17 @@
+[
+    {
+      "attraction": "Lastemuuseum MiiaMilla",
+      "word": "lapse",
+      "relatedWords": ["raad", "kaup", "hoone", "gootika"]
+    },
+    {
+      "attraction": "Mati Undi muuseum",
+      "word": "MatiU",
+      "relatedWords": ["Mati", "Unt", "muuseum", "kunst"] 
+    },
+    {
+      "attraction": "Eduard Vilde muuseum",
+      "word": "Vilde",
+      "relatedWords": ["Perenimi", "Vilde", "torn", "pink"] 
+    }
+  ]
