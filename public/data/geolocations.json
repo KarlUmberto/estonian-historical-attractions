@@ -4921,7 +4921,7 @@
           "addr:postcode": "10150",
           "addr:street": "Lydia Koidula",
           "address": "Koidula 12a, 10125 Tallinn",
-          "alt_name": "Tammsaare muuseum",
+          "alt_name": "A. H. Tammsaare muuseum",
           "museum": "person",
           "name": "A. H. Tammsaare Muuseum Tallinnas",
           "name:en": "A. H. Tammsaare Museum in Tallinn",
@@ -4934,6 +4934,7 @@
           "url": "www.linnamuuseum.ee/tammsaare",
           "website": "https://kirjanduskeskus.ee/tammsaare-muuseum/",
           "wheelchair": "no",
+          "info": "INfo anshan tammseere museum",
           "wikidata": "Q12357985",
           "wikipedia": "et:A. H. Tammsaare muuseum (Tallinn)"
         },

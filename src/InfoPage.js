@@ -100,7 +100,7 @@ const WordleGame = ({ targetWord, relatedWords }) => {
 };
 
 const InfoPage = () => {
-  const { name, info } = useParams();
+  const { name, info, alt_name } = useParams();
   const [wordData, setWordData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showWordle, setShowWordle] = useState(false);
@@ -134,7 +134,7 @@ const InfoPage = () => {
     return (
       <div className="info-page">
         <h1>{decodeURIComponent(name)}</h1>
-        <p>{decodeURIComponent(info)}</p>
+        <p>{decodeURIComponent(alt_name)}</p>
         <p>Selle koha kohta pole sõnamängu veel.</p>
       </div>
     );
@@ -144,7 +144,7 @@ const InfoPage = () => {
     <div className="info-page">
       <div className="text-container">
         <h1>{decodeURIComponent(name)}</h1>
-        <p className="text">{decodeURIComponent(info)}</p>
+        <p className="text">{decodeURIComponent(alt_name)}</p>
         <button onClick={toggleWordle}>
           {showWordle ? 'Peida Wordle' : 'Mängi Wordle'}
         </button>
