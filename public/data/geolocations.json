@@ -472,7 +472,7 @@
           "website": "https://kumu.ekm.ee/",
           "wheelchair": "yes",
           "wikidata": "Q919611",
-          "info": ""
+          "info": "mis on kumu"
         },
         "geometry": {
           "type": "Polygon",
@@ -10364,7 +10364,7 @@
           "addr:street": "Jaan Poska",
           "museum": "person",
           "name": "Mati Undi muuseum",
-          "info": "Kes on Mati Unt - ",
+          "info": "Who the fuck is mathi und",
           "name:en": "The Museum of Mati Unt",
           "opening_hours": "Tu-Sa 11:00-17:00",
           "operator": "Tallinna Kirjanduskeskus",
