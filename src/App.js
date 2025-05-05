@@ -4,15 +4,14 @@ import { Icon } from 'leaflet';
 import MarkerClusterGroup from "react-leaflet-markercluster";
 import "leaflet/dist/leaflet.css";
 import { useState, useEffect } from 'react';
-
 import {
   BrowserRouter as Router,
   Routes,
   Route,
   Link
 } from 'react-router-dom';
-
 import InfoPage from './InfoPage';
+import Auth from './Auth';
 
 const MarkerInfo = ({ marker }) => {
   const { name, info, address, phone, openingHours, website, coordinates } = marker;
@@ -66,7 +65,8 @@ function App() {
         console.log('error', error);
         setLoading(false);
       });
-    }, []);
+  }, []);
+
   const customIcon = new Icon({
     iconUrl: require("./marker.png"),
     iconSize: [38, 38]
@@ -74,12 +74,47 @@ function App() {
 
   return (
     <Router>
+      {/* Navigation Bar with Login Link */}
+      <nav style={{
+        backgroundColor: '#2c3e50',
+        padding: '15px 30px',
+        color: 'white',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        zIndex: 1000
+      }}>
+        <span>Eesti Ajaloolised Vaatusväärsused</span>
+        <Link 
+          to="/login" 
+          style={{
+            color: 'white',
+            textDecoration: 'none',
+            padding: '8px 15px',
+            borderRadius: '4px',
+            backgroundColor: '#3498db',
+            transition: 'background-color 0.3s'
+          }}
+        >
+          Logi sisse
+        </Link>
+      </nav>
+
       <Routes>
         <Route path="/" element={
           <div className="App">
-            <header className="App-header">
+            <header className="App-header" style={{ marginTop: '60px' }}>
               <div id="box">
-                <MapContainer center={[59.443475262102396, 24.79419282429169]} zoom={13} scrollWheelZoom={true} style={{ height: "100%", width: "100%" }}>
+                <MapContainer 
+                  center={[59.443475262102396, 24.79419282429169]} 
+                  zoom={13} 
+                  scrollWheelZoom={true} 
+                  style={{ height: "calc(100vh - 60px)", width: "100%" }}
+                >
                   <TileLayer
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -99,6 +134,7 @@ function App() {
           </div>
         } />
         <Route path="/info/:name/:info" element={<InfoPage />} />
+        <Route path="/login" element={<Auth />} />
       </Routes>
     </Router>
   );

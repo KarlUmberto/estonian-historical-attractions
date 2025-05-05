@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
-const WordleGame = ({ targetWord, relatedWords }) => {
+const WordleGame = ({targetWord, relatedWords}) => {
   const WORD_LENGTH = 5;
   const MAX_ATTEMPTS = 6;
   
@@ -134,7 +134,7 @@ const InfoPage = () => {
     return (
       <div className="info-page">
         <h1>{decodeURIComponent(name)}</h1>
-        <p>{decodeURIComponent(alt_name)}</p>
+        <p>{decodeURIComponent(info)}</p>
         <p>Selle koha kohta pole sõnamängu veel.</p>
       </div>
     );
@@ -144,7 +144,7 @@ const InfoPage = () => {
     <div className="info-page">
       <div className="text-container">
         <h1>{decodeURIComponent(name)}</h1>
-        <p className="text">{decodeURIComponent(alt_name)}</p>
+        <p className="text">{decodeURIComponent(info)}</p>
         <button onClick={toggleWordle}>
           {showWordle ? 'Peida Wordle' : 'Mängi Wordle'}
         </button>
