@@ -1,12 +1,18 @@
 {
   "name": "estonian-historical-attractions",
   "version": "0.1.0",
+  "proxy": "http://localhost:5000",
   "private": true,
   "dependencies": {
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.2.0",
     "@testing-library/user-event": "^13.5.0",
+    "bcryptjs": "^3.0.2",
+    "body-parser": "^2.2.0",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
     "leaflet": "^1.9.4",
     "react": "^19.0.0-rc.1",
     "react-dom": "^19.0.0-rc.1",
