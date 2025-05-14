@@ -100,7 +100,7 @@ const WordleGame = ({targetWord, relatedWords}) => {
 };
 
 const InfoPage = () => {
-  const { name, info, alt_name } = useParams();
+  const {name, info} = useParams();
   const [wordData, setWordData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showWordle, setShowWordle] = useState(false);
@@ -109,7 +109,6 @@ const InfoPage = () => {
   };
 
   useEffect(() => {
-    // Fetch word data for this specific attraction
     fetch('/data/wordData.json')
       .then((response) => response.json())
       .then((data) => {

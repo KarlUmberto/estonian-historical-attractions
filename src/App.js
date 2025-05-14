@@ -88,9 +88,20 @@ function App() {
         right: 0,
         zIndex: 1000
       }}>
-        <span>Eesti Ajaloolised Vaatusväärsused</span>
         <Link 
-          to="/login" 
+          to="/kaart" 
+          style={{
+            color: 'white',
+            textDecoration: 'none',
+            padding: '8px 15px',
+            borderRadius: '4px',
+            transition: 'background-color 0.3s'
+          }}
+        >
+          Eesti Ajaloolised Vaatamisväärsused
+        </Link>
+        <Link 
+          to="/" 
           style={{
             color: 'white',
             textDecoration: 'none',
@@ -105,7 +116,7 @@ function App() {
       </nav>
 
       <Routes>
-        <Route path="/" element={
+        <Route path="/kaart" element={
           <div className="App">
             <header className="App-header" style={{ marginTop: '60px' }}>
               <div id="box">
@@ -134,7 +145,7 @@ function App() {
           </div>
         } />
         <Route path="/info/:name/:info" element={<InfoPage />} />
-        <Route path="/login" element={<Auth />} />
+        <Route path="/" element={<Auth />} />
       </Routes>
     </Router>
   );

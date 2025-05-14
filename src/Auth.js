@@ -24,7 +24,7 @@ const Auth = () => {
     setError('');
 
     if (!isLogin && formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
+      setError('Paroolid ei kattu');
       return;
     }
 
@@ -43,12 +43,11 @@ const Auth = () => {
       });
 
       const data = await response.json();
-
       if (response.ok) {
         localStorage.setItem('token', data.token);
-        navigate('/'); // Redirect to home after login
+        navigate('/kaart'); // Redirect to home after login
       } else {
-        setError(data.message || 'Authentication failed');
+        setError(data.message || 'Registreerimine ebaõnnestus');
       }
     } catch (err) {
       setError('An error occurred. Please try again.');

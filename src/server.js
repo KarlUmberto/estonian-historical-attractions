@@ -4,11 +4,29 @@ const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const path = require('path');
-
 const app = express();
 const PORT = 5000;
 const USERS_FILE = path.join(__dirname, 'users.json');
 const SECRET = 'very_secret_key';
+
+app.use(express.json());
+
+const attractionInfo = JSON.parse(fs.readFileSync('./infoData.json')); // Info fail
+
+app.get('/api/info/:name', (req, res) => {
+  const name = decodeURIComponent(req.params.name);
+  const match = attractionInfo.find(item => item.name === name);
+
+  if (match) {
+    res.json(match);
+  } else {
+    res.status(404).json({ message: 'Info not found' });
+  }
+});
+
+app.listen(PORT, () => {
+  console.log(`Server running at http://localhost:${PORT}`);
+});
 
 app.use(cors({
     origin: 'http://localhost:3000',
