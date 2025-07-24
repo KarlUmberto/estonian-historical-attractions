@@ -11,7 +11,7 @@ const SECRET = 'very_secret_key';
 
 app.use(express.json());
 
-const attractionInfo = JSON.parse(fs.readFileSync('./infoData.json')); // Info fail
+const attractionInfo = JSON.parse(fs.readFileSync('./users.json')); // Info fail
 
 app.get('/api/info/:name', (req, res) => {
   const name = decodeURIComponent(req.params.name);

@@ -8,7 +8,8 @@ import {
   BrowserRouter as Router,
   Routes,
   Route,
-  Link
+  Link,
+  useNavigate
 } from 'react-router-dom';
 import InfoPage from './InfoPage';
 import Auth from './Auth';
@@ -32,6 +33,13 @@ const MarkerInfo = ({ marker }) => {
 function App() {
   const [markers, setMarkers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const handleLogin = () => setIsLoggedIn(true);
+
+  const handleLogout = () => {
+    setIsLoggedIn(false)
+  }
 
   useEffect(() => {
     fetch('/data/geolocations.json')
@@ -100,6 +108,7 @@ function App() {
         >
           Eesti Ajaloolised Vaatamisväärsused
         </Link>
+        {!isLoggedIn ? 
         <Link 
           to="/" 
           style={{
@@ -113,6 +122,23 @@ function App() {
         >
           Logi sisse
         </Link>
+        :
+        
+         <button 
+          onClick={handleLogout} 
+          style={{
+            color: 'white',
+            textDecoration: 'none',
+            padding: '8px 15px',
+            borderRadius: '4px',
+            backgroundColor: '#3498db',
+            transition: 'background-color 0.3s'
+          }}
+        >
+          Logi välja
+        </button>
+        
+        }
       </nav>
 
       <Routes>
@@ -145,7 +171,7 @@ function App() {
           </div>
         } />
         <Route path="/info/:name/:info" element={<InfoPage />} />
-        <Route path="/" element={<Auth />} />
+        <Route path="/" element={<Auth onLogin={handleLogin} />} />
       </Routes>
     </Router>
   );

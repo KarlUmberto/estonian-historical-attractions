@@ -1,13 +1,13 @@
 [
     {
       "attraction": "Lastemuuseum MiiaMilla",
-      "word": "lapse",
+      "word": "lapsed",
       "relatedWords": ["raad", "kaup", "hoone", "gootika"]
     },
     {
       "attraction": "Mati Undi muuseum",
-      "word": "MatiU",
-      "relatedWords": ["Mati", "Unt", "muuseum", "kunst"] 
+      "word": "Lava",
+      "relatedWords": ["Sinna astuvad näitlejad, valgus suunatakse sinna, publik vaatab sealt toimuvat", "Kunst"] 
     },
     {
       "attraction": "Eduard Vilde muuseum",
@@ -252,6 +252,11 @@
     {
       "attraction": "Metsanurme Koduloomuuseum",
       "word": "Nigul",
+      "relatedWords": ["asdasd", "Vilde", "torn", "pink"] 
+    },
+    {
+      "attraction": "Eesti Vabadusvõitluse Muuseum Lagedil",
+      "word": "Vabad",
       "relatedWords": ["asdasd", "Vilde", "torn", "pink"] 
     }
   ]

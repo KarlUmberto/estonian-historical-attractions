@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Auth.css';
 
-const Auth = () => {
+const Auth = ({ onLogin }) => {
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({
     email: '',
@@ -46,6 +46,7 @@ const Auth = () => {
       if (response.ok) {
         localStorage.setItem('token', data.token);
         navigate('/kaart'); // Redirect to home after login
+        onLogin();
       } else {
         setError(data.message || 'Registreerimine ebaõnnestus');
       }
