@@ -30,6 +30,31 @@ const MarkerInfo = ({ marker }) => {
   );
 };
 
+const LogoutButton = ({ onLogout }) => {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    onLogout();        
+    navigate("/");     
+  };
+
+  return (
+    <button 
+      onClick={handleClick}
+      style={{
+        color: 'white',
+        textDecoration: 'none',
+        padding: '8px 15px',
+        borderRadius: '4px',
+        backgroundColor: '#3498db',
+        transition: 'background-color 0.3s'
+      }}
+    >
+      Logi välja
+    </button>
+  );
+};
+
 function App() {
   const [markers, setMarkers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -123,21 +148,7 @@ function App() {
           Logi sisse
         </Link>
         :
-        
-         <button 
-          onClick={handleLogout} 
-          style={{
-            color: 'white',
-            textDecoration: 'none',
-            padding: '8px 15px',
-            borderRadius: '4px',
-            backgroundColor: '#3498db',
-            transition: 'background-color 0.3s'
-          }}
-        >
-          Logi välja
-        </button>
-        
+        <LogoutButton onLogout={handleLogout} />
         }
       </nav>
 
