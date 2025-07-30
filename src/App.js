@@ -13,6 +13,7 @@ import {
 } from 'react-router-dom';
 import InfoPage from './InfoPage';
 import Auth from './Auth';
+import UserContext from './components/UserContext'
 
 const MarkerInfo = ({ marker }) => {
   const { name, info, address, phone, openingHours, website, coordinates } = marker;
@@ -30,7 +31,7 @@ const MarkerInfo = ({ marker }) => {
   );
 };
 
-const LogoutButton = ({ onLogout }) => {
+const LogoutButton = ({ onLogout, user }) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
@@ -50,7 +51,7 @@ const LogoutButton = ({ onLogout }) => {
         transition: 'background-color 0.3s'
       }}
     >
-      Logi välja
+      Logi välja {user?.name}
     </button>
   );
 };
@@ -58,13 +59,15 @@ const LogoutButton = ({ onLogout }) => {
 function App() {
   const [markers, setMarkers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState(null); 
 
-  const handleLogin = () => setIsLoggedIn(true);
-
+  const handleLogin = (userData) => setUser(userData);  
   const handleLogout = () => {
-    setIsLoggedIn(false)
-  }
+    setUser(null);
+    localStorage.removeItem('token');
+  };
+
+  const isLoggedIn = !!user;
 
   useEffect(() => {
     fetch('/data/geolocations.json')
@@ -106,85 +109,86 @@ function App() {
   });
 
   return (
-    <Router>
-      {/* Navigation Bar with Login Link */}
-      <nav style={{
-        backgroundColor: '#2c3e50',
-        padding: '15px 30px',
-        color: 'white',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        zIndex: 1000
-      }}>
-        <Link 
-          to="/kaart" 
-          style={{
-            color: 'white',
-            textDecoration: 'none',
-            padding: '8px 15px',
-            borderRadius: '4px',
-            transition: 'background-color 0.3s'
-          }}
-        >
-          Eesti Ajaloolised Vaatamisväärsused
-        </Link>
-        {!isLoggedIn ? 
-        <Link 
-          to="/" 
-          style={{
-            color: 'white',
-            textDecoration: 'none',
-            padding: '8px 15px',
-            borderRadius: '4px',
-            backgroundColor: '#3498db',
-            transition: 'background-color 0.3s'
-          }}
-        >
-          Logi sisse
-        </Link>
-        :
-        <LogoutButton onLogout={handleLogout} />
-        }
-      </nav>
+    <UserContext.Provider value={{ user, setUser }}>
+      <Router>
+        <nav style={{
+          backgroundColor: '#2c3e50',
+          padding: '15px 30px',
+          color: 'white',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 1000
+        }}>
+          <Link 
+            to="/kaart" 
+            style={{
+              color: 'white',
+              textDecoration: 'none',
+              padding: '8px 15px',
+              borderRadius: '4px',
+              transition: 'background-color 0.3s'
+            }}
+          >
+            Eesti Ajaloolised Vaatamisväärsused
+          </Link>
+          {!isLoggedIn ? 
+          <Link 
+            to="/" 
+            style={{
+              color: 'white',
+              textDecoration: 'none',
+              padding: '8px 15px',
+              borderRadius: '4px',
+              backgroundColor: '#3498db',
+              transition: 'background-color 0.3s'
+            }}
+          >
+            Logi sisse
+          </Link>
+          :
+          <LogoutButton onLogout={handleLogout} />
+          }
+        </nav>
 
-      <Routes>
-        <Route path="/kaart" element={
-          <div className="App">
-            <header className="App-header" style={{ marginTop: '60px' }}>
-              <div id="box">
-                <MapContainer 
-                  center={[59.443475262102396, 24.79419282429169]} 
-                  zoom={13} 
-                  scrollWheelZoom={true} 
-                  style={{ height: "calc(100vh - 60px)", width: "100%" }}
-                >
-                  <TileLayer
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                  />
-                  <MarkerClusterGroup>
-                    {markers.map((marker, index) => (
-                      <Marker key={index} position={marker.coordinates} icon={customIcon}>
-                        <Popup>
-                          <MarkerInfo marker={marker} />
-                        </Popup>
-                      </Marker>
-                    ))}
-                  </MarkerClusterGroup>
-                </MapContainer>
-              </div>
-            </header>
-          </div>
-        } />
-        <Route path="/info/:name/:info" element={<InfoPage />} />
-        <Route path="/" element={<Auth onLogin={handleLogin} />} />
-      </Routes>
-    </Router>
+        <Routes>
+          <Route path="/kaart" element={
+            <div className="App">
+              <header className="App-header" style={{ marginTop: '60px' }}>
+                <div id="box">
+                  <MapContainer 
+                    center={[59.443475262102396, 24.79419282429169]} 
+                    zoom={13} 
+                    scrollWheelZoom={true} 
+                    style={{ height: "calc(100vh - 60px)", width: "100%" }}
+                  >
+                    <TileLayer
+                      attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    />
+                    <MarkerClusterGroup>
+                      {markers.map((marker, index) => (
+                        <Marker key={index} position={marker.coordinates} icon={customIcon}>
+                          <Popup>
+                            <MarkerInfo marker={marker} />
+                          </Popup>
+                        </Marker>
+                      ))}
+                    </MarkerClusterGroup>
+                  </MapContainer>
+                </div>
+              </header>
+            </div>
+          } />
+          <Route path="/info/:name/:info" element={<InfoPage />} />
+          <Route path="/" element={<Auth onLogin={handleLogin} />} />
+        </Routes>
+      </Router>
+    </UserContext.Provider>
   );
 }
 

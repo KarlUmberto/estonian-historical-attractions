@@ -49,8 +49,12 @@ function saveUsers(users) {
 
 // Register
 app.post('/api/signup', async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, name } = req.body;
   const users = loadUsers();
+
+  if (!name || !name.trim()) {
+    return res.status(400).json({ message: 'Palun sisesta nimi' });
+  }
 
   const existingUser = users.find(user => user.email === email);
   if (existingUser) {
@@ -58,11 +62,14 @@ app.post('/api/signup', async (req, res) => {
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
-  users.push({ email, password: hashedPassword });
+  const role = 'student';
+
+  const newUser = { email, password: hashedPassword, name, role };
+  users.push(newUser);
   saveUsers(users);
 
-  const token = jwt.sign({ email }, SECRET, { expiresIn: '1h' });
-  res.json({ token });
+  const token = jwt.sign({ email, name, role }, SECRET, { expiresIn: '1h' });
+  res.json({ token, user: { email, name, role } });
 });
 
 // Login
@@ -80,8 +87,9 @@ app.post('/api/login', async (req, res) => {
     return res.status(400).json({ message: 'Vale email või parool' });
   }
 
-  const token = jwt.sign({ email }, SECRET, { expiresIn: '1h' });
-  res.json({ token });
+
+  const token = jwt.sign({ email: user.email, name: user.name, role: user.role }, SECRET, { expiresIn: '1h' });
+  res.json({ token, user: { email: user.email, name: user.name, role: user.role } });
 });
 
 //score table: game, user, score, datestamp
@@ -113,7 +121,7 @@ app.post('/api/scores/:gameType/:gameName', (req, res) => {
   const gameName = req.params.gameName.toLowerCase();
   const { user, score } = req.body;
 
-  if (!user || typeof score !== 'number') {
+  if (!user || !score) {
     return res.status(400).json({ message: 'Vigased andmed' });
   }
 

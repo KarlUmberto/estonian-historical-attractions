@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import UserContext from './components/UserContext'
 import './Auth.css';
 
 const Auth = ({ onLogin }) => {
@@ -7,16 +8,15 @@ const Auth = ({ onLogin }) => {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    name: '',
   });
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const { setUser } = useContext(UserContext);
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
@@ -30,22 +30,26 @@ const Auth = ({ onLogin }) => {
 
     try {
       const endpoint = isLogin ? '/api/login' : '/api/signup';
+      const bodyData = {
+        email: formData.email,
+        password: formData.password,
+      };
+      if (!isLogin) {
+        bodyData.name = formData.name;
+      }
+
       const response = await fetch(endpoint, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: formData.email,
-          password: formData.password
-        }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(bodyData),
       });
 
       const data = await response.json();
       if (response.ok) {
         localStorage.setItem('token', data.token);
+        setUser(data.user);    
+        onLogin(data.user);
         navigate('/kaart');
-        onLogin();
       } else {
         setError(data.message || 'Registreerimine ebaõnnestus');
       }
@@ -59,6 +63,18 @@ const Auth = ({ onLogin }) => {
       <h2>{isLogin ? 'Logi sisse' : 'Registreeri'}</h2>
       {error && <div className="error-message">{error}</div>}
       <form onSubmit={handleSubmit}>
+        {!isLogin && (
+          <div className="form-group">
+            <label>Nimi:</label>
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              required={!isLogin}
+            />
+          </div>
+        )}
         <div className="form-group">
           <label>Email:</label>
           <input
@@ -95,8 +111,8 @@ const Auth = ({ onLogin }) => {
           {isLogin ? 'Logi sisse' : 'Registreeri'}
         </button>
       </form>
-      <button 
-        className="toggle-auth" 
+      <button
+        className="toggle-auth"
         onClick={() => setIsLogin(!isLogin)}
       >
         {isLogin ? 'Pole kontot? Registreeri!' : 'Oled juba kasutaja? Logi sisse!'}

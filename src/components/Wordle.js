@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import words from './eesti-sonad.json'
+import UserContext from './UserContext';
+import { useContext } from 'react';
 
 const WordleGame = ({ targetWord, relatedWords, gameName }) => {
   const MAX_ATTEMPTS = 6;
@@ -10,6 +12,8 @@ const WordleGame = ({ targetWord, relatedWords, gameName }) => {
   const [message, setMessage] = useState('');
   const [targetLength, setTargetLength] = useState("");
   const [scores, setScores] = useState([]);
+
+  const { user } = useContext(UserContext);
 
   useEffect(() => {
     if (targetWord) {
@@ -68,14 +72,13 @@ const WordleGame = ({ targetWord, relatedWords, gameName }) => {
 
     if (playerScore != null) {
       try {
-        const user = localStorage.getItem('user'); 
         const response = await fetch(`http://localhost:5000/api/scores/wordle/${gameName.toLowerCase()}`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            user: user || 'anonüümne',
+            user: user?.name || 'anonüümne',
             score: playerScore
           })
         });

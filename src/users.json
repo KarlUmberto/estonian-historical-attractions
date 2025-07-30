@@ -1,10 +1,8 @@
 [
   {
-    "email": "karl.pongolini@gmail.com",
-    "password": "$2b$10$v.hTZ9Lf85eQF0z0hRdl6OlnIsZ4glI7u/FcYWyvLcQ9F/HTGF2ge"
-  },
-  {
     "email": "karl@karl.karl.com",
-    "password": "$2b$10$swCRjJRY4mo0C3JeH5xZYedU9Pad7hkv7NxUhE0197.DcSqyDWWIq"
+    "password": "$2b$10$G2maKms9gJJomeBrImvL0.aemZOIaEBWQaXnU9U99vQBN8avZJedm",
+    "name": "Karl Umberto Karl",
+    "role": "student"
   }
 ]
