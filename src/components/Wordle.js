@@ -1,27 +1,47 @@
 import { useState, useEffect } from 'react';
 import words from './eesti-sonad.json'
 
-const WordleGame = ({targetWord, relatedWords}) => {
-  //const WORD_LENGTH = 5;
+const WordleGame = ({ targetWord, relatedWords, gameName }) => {
   const MAX_ATTEMPTS = 6;
   
   const [guesses, setGuesses] = useState([]);
   const [currentGuess, setCurrentGuess] = useState('');
   const [gameOver, setGameOver] = useState(false);
   const [message, setMessage] = useState('');
-  const [targetLength, setTargetLength] = useState("")
+  const [targetLength, setTargetLength] = useState("");
+  const [scores, setScores] = useState([]);
 
   useEffect(() => {
-    if (targetWord){
-        setTargetLength(targetWord.length)
+    if (targetWord) {
+      setTargetLength(targetWord.length);
     }
   }, [targetWord]);
 
-  const handleGuess = () => {
+  useEffect(() => {
+    const fetchScores = async () => {
+      if (!gameName) return; // don't fetch if gameName is missing
 
-    if (!words.includes(currentGuess.toLowerCase())){
-        setMessage(`Guess peab olema paris sona`);
-        return;
+      try {
+        const response = await fetch(`http://localhost:5000/api/scores/wordle/${gameName.toLowerCase()}`);
+        const data = await response.json();
+
+        if (response.ok && Array.isArray(data)) {
+          setScores(data.sort((a, b) => new Date(b.datestamp) - new Date(a.datestamp)));
+        } else {
+          console.error('Skooride laadimine ebaõnnestus:', data.message || data);
+        }
+      } catch (err) {
+        console.error('Viga skooride toomisel:', err);
+      }
+    };
+
+    fetchScores();
+  }, [gameName]);
+
+  const handleGuess = async () => {
+    if (!words.includes(currentGuess.toLowerCase())) {
+      setMessage(`Guess peab olema päris sõna`);
+      return;
     }
 
     if (currentGuess.length !== targetLength) {
@@ -34,12 +54,42 @@ const WordleGame = ({targetWord, relatedWords}) => {
     setCurrentGuess('');
     setMessage('');
 
+    let playerScore = null;
+
     if (currentGuess.toLowerCase() === targetWord.toLowerCase()) {
       setMessage('Õnnitlused! Sa arvasid õigesti!');
       setGameOver(true);
+      playerScore = newGuesses.length;
     } else if (newGuesses.length >= MAX_ATTEMPTS) {
       setMessage(`Game over! Õige sõna oli ${targetWord}`);
       setGameOver(true);
+      playerScore = "Kaotas.";
+    }
+
+    if (playerScore != null) {
+      try {
+        const user = localStorage.getItem('user'); 
+        const response = await fetch(`http://localhost:5000/api/scores/wordle/${gameName.toLowerCase()}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            user: user || 'anonüümne',
+            score: playerScore
+          })
+        });
+
+        const data = await response.json();
+        if (!response.ok) {
+          console.error('Skoori salvestamine ebaõnnestus:', data.message);
+        } else {
+          // Optionally, refresh scores after adding new score
+          setScores(prev => [...prev, data.score].sort((a, b) => new Date(b.datestamp) - new Date(a.datestamp)));
+        }
+      } catch (err) {
+        console.error('Viga skoori saatmisel:', err);
+      }
     }
   };
 
@@ -101,6 +151,22 @@ const WordleGame = ({targetWord, relatedWords}) => {
       )}
 
       {message && <div className="wordle-message">{message}</div>}
+
+      <div className="score-section">
+        <h3>Skoorid</h3>
+        {scores.length === 0 ? (
+          <p>Hetkel skoorid puuduvad.</p>
+        ) : (
+          <ul>
+            {scores.map((entry, index) => (
+              <li key={index}>
+                <strong>{entry.user}</strong>: {entry.score}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+
     </div>
   );
 };

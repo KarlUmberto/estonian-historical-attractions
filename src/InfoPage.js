@@ -55,7 +55,8 @@ const InfoPage = () => {
       <div className={showWordle ? 'visible' : 'hidden'}>
         <WordleGame 
           targetWord={wordData.word} 
-          relatedWords={wordData.relatedWords} 
+          relatedWords={wordData.relatedWords}
+          gameName={wordData.attraction} 
         />
       </div>
     </div>

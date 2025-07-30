@@ -29,7 +29,6 @@ const Auth = ({ onLogin }) => {
     }
 
     try {
-      // Replace with your actual authentication endpoint
       const endpoint = isLogin ? '/api/login' : '/api/signup';
       const response = await fetch(endpoint, {
         method: 'POST',
@@ -45,7 +44,7 @@ const Auth = ({ onLogin }) => {
       const data = await response.json();
       if (response.ok) {
         localStorage.setItem('token', data.token);
-        navigate('/kaart'); // Redirect to home after login
+        navigate('/kaart');
         onLogin();
       } else {
         setError(data.message || 'Registreerimine ebaõnnestus');
