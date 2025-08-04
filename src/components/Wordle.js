@@ -67,7 +67,7 @@ const WordleGame = ({ targetWord, relatedWords, gameName }) => {
     } else if (newGuesses.length >= MAX_ATTEMPTS) {
       setMessage(`Game over! Õige sõna oli ${targetWord}`);
       setGameOver(true);
-      playerScore = "Kaotas.";
+      playerScore = "Kaotas";
     }
 
     if (playerScore != null) {
@@ -161,11 +161,21 @@ const WordleGame = ({ targetWord, relatedWords, gameName }) => {
           <p>Hetkel skoorid puuduvad.</p>
         ) : (
           <ul>
-            {scores.map((entry, index) => (
-              <li key={index}>
-                <strong>{entry.user}</strong>: {entry.score}
-              </li>
-            ))}
+            {scores.slice(0,10).map((entry, index) => {
+              const date = new Date(entry.datestamp);
+              const formatted = date.toLocaleString('en-GB', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false,
+              });
+              return (
+                <li key={index}><strong>{entry.user}</strong>: {entry.score} - <i>{formatted}</i> </li>
+              );
+            }
+            )}
           </ul>
         )}
       </div>
