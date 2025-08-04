@@ -14,6 +14,7 @@ import {
 import InfoPage from './InfoPage';
 import Auth from './Auth';
 import UserContext from './components/UserContext'
+import PrivateRoute from './components/PrivateRoute';
 
 const MarkerInfo = ({ marker }) => {
   const { name, info, address, phone, openingHours, website, coordinates } = marker;
@@ -157,6 +158,7 @@ function App() {
 
         <Routes>
           <Route path="/kaart" element={
+            <PrivateRoute allowedRoles={["student","teacher"]}>
             <div className="App">
               <header className="App-header" style={{ marginTop: '60px' }}>
                 <div id="box">
@@ -183,8 +185,13 @@ function App() {
                 </div>
               </header>
             </div>
+            </PrivateRoute>
           } />
-          <Route path="/info/:name/:info" element={<InfoPage />} />
+          <Route path="/info/:name/:info" element={
+            <PrivateRoute allowedRoles={["student","teacher"]}>
+              <InfoPage />
+            </PrivateRoute>
+            } />
           <Route path="/" element={<Auth onLogin={handleLogin} />} />
         </Routes>
       </Router>
