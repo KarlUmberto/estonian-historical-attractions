@@ -173,26 +173,26 @@ app.get('/api/gamedata/:attraction', (req, res) => {
   res.json(gameData[attraction]);
 });
 
-// { "gameType": "wordle", "data": { "word": "lapsed", "relatedWords": ["raad", "kaup"] } }
-app.post('/api/gamedata/:attraction', (req, res) => {
+app.put('/api/gamedata/:attraction', (req, res) => {
   const attraction = decodeURIComponent(req.params.attraction);
-  const { gameType, data } = req.body;
+  const newData = req.body;
 
-  if (!gameType || !data) {
-    return res.status(400).json({ message: 'Missing gameType or data' });
+  if (!newData || typeof newData !== 'object') {
+    return res.status(400).json({ message: 'Invalid or missing game data in request body' });
   }
 
   const gameData = loadGameData();
+  gameData[attraction] = newData;
 
-  if (!gameData[attraction]) {
-    gameData[attraction] = {};
+  try {
+    saveGameData(gameData);
+    res.json({ message: `Game data for "${attraction}" saved successfully.` });
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to save game data', error });
   }
-
-  gameData[attraction][gameType] = data;
-
-  saveGameData(gameData);
-  res.status(201).json({ message: 'Game data updated', [attraction]: gameData[attraction] });
 });
+
+
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);

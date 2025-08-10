@@ -137,6 +137,8 @@ function App() {
           >
             Eesti Ajaloolised Vaatamisväärsused
           </Link>
+
+          {user && (<p>{user.name}, {user.role}</p>)}
           {!isLoggedIn ? 
           <Link 
             to="/" 
@@ -158,7 +160,7 @@ function App() {
 
         <Routes>
           <Route path="/kaart" element={
-            <PrivateRoute allowedRoles={["student","teacher"]}>
+            <PrivateRoute allowedRoles={["õpilane","õpetaja"]}>
             <div className="App">
               <header className="App-header" style={{ marginTop: '60px' }}>
                 <div id="box">
@@ -188,7 +190,7 @@ function App() {
             </PrivateRoute>
           } />
           <Route path="/info/:name/:info" element={
-            <PrivateRoute allowedRoles={["student","teacher"]}>
+            <PrivateRoute allowedRoles={["õpilane","õpetaja"]}>
               <InfoPage />
             </PrivateRoute>
             } />
