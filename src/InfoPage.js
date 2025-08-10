@@ -3,29 +3,42 @@ import { useParams } from 'react-router-dom';
 import WordleGame from './components/Wordle';
 
 const InfoPage = () => {
-  const {name, info} = useParams();
+  const { name, info } = useParams();
   const [wordData, setWordData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showWordle, setShowWordle] = useState(false);
+
   const toggleWordle = () => {
     setShowWordle(!showWordle);
   };
 
   useEffect(() => {
-    fetch('/data/wordData.json')
-      .then((response) => response.json())
-      .then((data) => {
+    const fetchGameData = async () => {
+      try {
         const decodedName = decodeURIComponent(name);
-        const attractionWords = data.find(item => 
-          item.attraction.toLowerCase() === decodedName.toLowerCase()
+        const response = await fetch(
+          `http://localhost:5000/api/gamedata/${encodeURIComponent(decodedName)}`
         );
-        setWordData(attractionWords || null);
+
+        if (!response.ok) {
+          if (response.status === 404) {
+            setWordData(null);
+          } else {
+            throw new Error('Server error');
+          }
+        } else {
+          const data = await response.json();
+          setWordData(data);
+        }
+      } catch (error) {
+        console.error('Error loading game data:', error);
+        setWordData(null);
+      } finally {
         setLoading(false);
-      })
-      .catch((error) => {
-        console.error('Error loading word data:', error);
-        setLoading(false);
-      });
+      }
+    };
+
+    fetchGameData();
   }, [name]);
 
   if (loading) {
@@ -37,7 +50,8 @@ const InfoPage = () => {
       <div className="info-page">
         <h1>{decodeURIComponent(name)}</h1>
         <p>{decodeURIComponent(info)}</p>
-        <p>Selle koha kohta pole sõnamängu veel.</p>
+        <p>Sellele kohale pole veel mänge lisatud.</p>
+        {/* Kui admin on sisse logitud, siis nupp et lisada uus mäng. (muuta andmeid)*/}
       </div>
     );
   }
@@ -51,12 +65,12 @@ const InfoPage = () => {
           {showWordle ? 'Peida Wordle' : 'Mängi Wordle'}
         </button>
       </div>
-      
+
       <div className={showWordle ? 'visible' : 'hidden'}>
-        <WordleGame 
-          targetWord={wordData.word} 
-          relatedWords={wordData.relatedWords}
-          gameName={wordData.attraction} 
+        <WordleGame
+          targetWord={wordData.wordle.word}
+          relatedWords={wordData.wordle.relatedWords}
+          gameName={decodeURIComponent(name)}
         />
       </div>
     </div>

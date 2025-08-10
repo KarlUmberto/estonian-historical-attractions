@@ -6,13 +6,14 @@ const jwt = require('jsonwebtoken');
 const path = require('path');
 const app = express();
 const PORT = 5000;
-const USERS_FILE = path.join(__dirname, 'users.json');
-const SCORES_FILE = path.join(__dirname, 'scores.json')
+const USERS_FILE = path.join(__dirname, 'data/users.json');
+const SCORES_FILE = path.join(__dirname, 'data/scores.json')
+const GAMEDATA_FILE = path.join(__dirname, 'data/gameData.json')
 const SECRET = 'very_secret_key';
 
 app.use(express.json());
 
-const users = JSON.parse(fs.readFileSync('./users.json')); // Info fail
+const users = JSON.parse(fs.readFileSync('./data/users.json')); // Info fail
 
 app.get('/api/info/:name', (req, res) => {
   const name = decodeURIComponent(req.params.name);
@@ -146,6 +147,52 @@ app.post('/api/scores/:gameType/:gameName', (req, res) => {
   res.status(201).json({ message: `Skoor lisatud mängule "${gameType}/${gameName}"`, score: newScore });
 });
 
+
+function loadGameData() {
+  if (!fs.existsSync(GAMEDATA_FILE)) return {};
+  const data = fs.readFileSync(GAMEDATA_FILE);
+  return JSON.parse(data);
+}
+
+function saveGameData(data) {
+  fs.writeFileSync(GAMEDATA_FILE, JSON.stringify(data, null, 2));
+}
+
+app.get('/api/gamedata', (req, res) => {
+  const gameData = loadGameData();
+  res.json(gameData);
+});
+
+app.get('/api/gamedata/:attraction', (req, res) => {
+  const attraction = decodeURIComponent(req.params.attraction);
+  const gameData = loadGameData();
+
+  if (!gameData[attraction]) {
+    return res.status(404).json({ message: 'Attraction not found' });
+  }
+  res.json(gameData[attraction]);
+});
+
+// { "gameType": "wordle", "data": { "word": "lapsed", "relatedWords": ["raad", "kaup"] } }
+app.post('/api/gamedata/:attraction', (req, res) => {
+  const attraction = decodeURIComponent(req.params.attraction);
+  const { gameType, data } = req.body;
+
+  if (!gameType || !data) {
+    return res.status(400).json({ message: 'Missing gameType or data' });
+  }
+
+  const gameData = loadGameData();
+
+  if (!gameData[attraction]) {
+    gameData[attraction] = {};
+  }
+
+  gameData[attraction][gameType] = data;
+
+  saveGameData(gameData);
+  res.status(201).json({ message: 'Game data updated', [attraction]: gameData[attraction] });
+});
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
