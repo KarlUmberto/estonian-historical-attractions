@@ -63,7 +63,7 @@ app.post('/api/signup', async (req, res) => {
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
-  const role = 'student';
+  const role = 'õpilane';
 
   const newUser = { email, password: hashedPassword, name, role };
   users.push(newUser);

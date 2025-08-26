@@ -38,7 +38,6 @@ const InfoPage = () => {
           setWordData(data);
         }
       } catch (error) {
-        console.error('Error loading game data:', error);
         setWordData(null);
         setLoading(false);
       } finally {
@@ -71,7 +70,7 @@ const InfoPage = () => {
         
 
       </div>
-      {wordData.wordle && wordData.wordle.word !== "" && 
+      {wordData !== null && wordData?.wordle?.word !== "" && 
         <>
           <button onClick={toggleWordle}>
             {showWordle ? 'Peida Wordle' : 'Mängi Wordle'}
