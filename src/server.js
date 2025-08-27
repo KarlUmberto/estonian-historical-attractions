@@ -1,4 +1,7 @@
+const dotenv = require('dotenv')
+dotenv.config()
 const express = require('express');
+const mysql = require('mysql2/promise');
 const fs = require('fs');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
@@ -6,14 +9,58 @@ const jwt = require('jsonwebtoken');
 const path = require('path');
 const app = express();
 const PORT = 5000;
-const USERS_FILE = path.join(__dirname, 'data/users.json');
-const SCORES_FILE = path.join(__dirname, 'data/scores.json')
+const USERS_FILE = path.join(__dirname, 'data/users.json'); //remove when db work
+const SCORES_FILE = path.join(__dirname, 'data/scores.json') //remove when db work
 const GAMEDATA_FILE = path.join(__dirname, 'data/gameData.json')
 const SECRET = 'very_secret_key';
 
 app.use(express.json());
 
-const users = JSON.parse(fs.readFileSync('./data/users.json')); // Info fail
+const users = JSON.parse(fs.readFileSync('./data/users.json')); //remove when db work
+
+const pool = mysql.createPool({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
+});
+
+async function initDB() {
+  try {
+    const conn = await pool.getConnection();
+
+    // Users table
+    await conn.query(`
+      CREATE TABLE IF NOT EXISTS users (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        email VARCHAR(255) UNIQUE NOT NULL,
+        password VARCHAR(255) NOT NULL,
+        name VARCHAR(255) NOT NULL,
+        role VARCHAR(50) NOT NULL
+      )
+    `);
+
+    // Scores table
+    await conn.query(`
+      CREATE TABLE IF NOT EXISTS scores (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        user_id int NOT NULL,
+        game_type VARCHAR(255) NOT NULL,
+        attraction_name VARCHAR(255) NOT NULL,
+        score VARCHAR(255) NOT NULL,
+        datestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
+    conn.release();
+    console.log('✅ Database initialized');
+  } catch (err) {
+    console.error('❌ Failed to initialize database:', err.message);
+  }
+}
 
 app.get('/api/info/:name', (req, res) => {
   const name = decodeURIComponent(req.params.name);
@@ -24,10 +71,6 @@ app.get('/api/info/:name', (req, res) => {
   } else {
     res.status(404).json({ message: 'Info not found' });
   }
-});
-
-app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
 });
 
 app.use(cors({
@@ -194,6 +237,8 @@ app.put('/api/gamedata/:attraction', (req, res) => {
 
 
 
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-});
+initDB().then(() => {
+  app.listen(PORT, () => {
+    console.log(`Server running at http://localhost:${PORT}`);
+  })
+})
