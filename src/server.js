@@ -9,14 +9,10 @@ const jwt = require('jsonwebtoken');
 const path = require('path');
 const app = express();
 const PORT = 5000;
-const USERS_FILE = path.join(__dirname, 'data/users.json'); //remove when db work
-const SCORES_FILE = path.join(__dirname, 'data/scores.json') //remove when db work
 const GAMEDATA_FILE = path.join(__dirname, 'data/gameData.json')
 const SECRET = 'very_secret_key';
 
 app.use(express.json());
-
-const users = JSON.parse(fs.readFileSync('./data/users.json')); //remove when db work
 
 const pool = mysql.createPool({
   host: process.env.DB_HOST,
@@ -62,105 +58,124 @@ async function initDB() {
   }
 }
 
-app.get('/api/info/:name', (req, res) => {
-  const name = decodeURIComponent(req.params.name);
-  const match = users.find(item => item.name === name);
-
-  if (match) {
-    res.json(match);
-  } else {
-    res.status(404).json({ message: 'Info not found' });
-  }
-});
-
 app.use(cors({
     origin: 'http://localhost:3000',
     credentials: true
   }));
 app.use(express.json());
 
-// Helper: Load users
-function loadUsers() {
-  if (!fs.existsSync(USERS_FILE)) return [];
-  const data = fs.readFileSync(USERS_FILE);
-  return JSON.parse(data);
-}
 
-// Helper: Save users
-function saveUsers(users) {
-  fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
-}
+app.get('/api/info/:name', async (req, res) => {
+  const name = decodeURIComponent(req.params.name);
+
+  try {
+    const [rows] = await pool.query(
+      'SELECT email, name, role FROM users WHERE name = ?',
+      [name]
+    );
+    const user = rows[0];
+
+    if (user) {
+      res.json(user);
+    } else {
+      res.status(404).json({ message: 'Info not found' });
+    }
+  } catch (err) {
+    res.status(500).json({ message: 'Database error' });
+  }
+});
 
 // Register
 app.post('/api/signup', async (req, res) => {
   const { email, password, name } = req.body;
-  const users = loadUsers();
 
   if (!name || !name.trim()) {
     return res.status(400).json({ message: 'Palun sisesta nimi' });
   }
 
-  const existingUser = users.find(user => user.email === email);
-  if (existingUser) {
-    return res.status(400).json({ message: 'Kasutaja juba olemas' });
+  try {
+    const [existing] = await pool.query(
+      'SELECT id FROM users WHERE email = ?',
+      [email]
+    );
+    if (existing.length > 0) {
+      return res.status(400).json({ message: 'Kasutaja juba olemas' });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const role = 'õpilane';
+
+    await pool.query(
+      'INSERT INTO users (email, password, name, role) VALUES (?, ?, ?, ?)',
+      [email, hashedPassword, name, role]
+    );
+
+    const token = jwt.sign({ email, name, role }, SECRET, { expiresIn: '1h' });
+    res.json({ token, user: { email, name, role } });
+
+  } catch (err) {
+    console.error('Signup error:', err);
+    res.status(500).json({ message: 'Server error' });
   }
-
-  const hashedPassword = await bcrypt.hash(password, 10);
-  const role = 'õpilane';
-
-  const newUser = { email, password: hashedPassword, name, role };
-  users.push(newUser);
-  saveUsers(users);
-
-  const token = jwt.sign({ email, name, role }, SECRET, { expiresIn: '1h' });
-  res.json({ token, user: { email, name, role } });
 });
 
 // Login
 app.post('/api/login', async (req, res) => {
   const { email, password } = req.body;
-  const users = loadUsers();
 
-  const user = users.find(u => u.email === email);
-  if (!user) {
-    return res.status(400).json({ message: 'Vale email või parool' });
+  try {
+    const [rows] = await pool.query(
+      'SELECT * FROM users WHERE email = ?',
+      [email]
+    );
+    const user = rows[0];
+
+    if (!user) {
+      return res.status(400).json({ message: 'Vale email või parool' });
+    }
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: 'Vale email või parool' });
+    }
+    const token = jwt.sign(
+      { email: user.email, name: user.name, role: user.role },
+      SECRET,
+      { expiresIn: '1h' }
+    );
+
+    res.json({
+      token,
+      user: { email: user.email, name: user.name, role: user.role }
+    });
+
+  } catch (err) {
+    console.error('Login error:', err);
+    res.status(500).json({ message: 'Server error' });
   }
-
-  const isMatch = await bcrypt.compare(password, user.password);
-  if (!isMatch) {
-    return res.status(400).json({ message: 'Vale email või parool' });
-  }
-
-
-  const token = jwt.sign({ email: user.email, name: user.name, role: user.role }, SECRET, { expiresIn: '1h' });
-  res.json({ token, user: { email: user.email, name: user.name, role: user.role } });
 });
 
-//score table: game, user, score, datestamp
-function loadScores() {
-  if (!fs.existsSync(SCORES_FILE)) return [];
-  const data = fs.readFileSync(SCORES_FILE)
-  return JSON.parse(data);
-}
-
-function saveScores(scores) {
-  fs.writeFileSync(SCORES_FILE, JSON.stringify(scores,null,2))
-}
-
-app.get('/api/scores/:gameType/:gameName', (req, res) => {
+app.get('/api/scores/:gameType/:gameName', async (req, res) => {
   const gameType = req.params.gameType.toLowerCase();
   const gameName = req.params.gameName.toLowerCase();
-  const scores = loadScores();
 
-  if (!scores[gameType] || !scores[gameType][gameName]) {
-    return res.json([]);
+  try {
+    const [rows] = await pool.query(
+      `SELECT u.name AS user, s.score, s.datestamp
+       FROM scores s
+       JOIN users u ON s.user_id = u.id
+       WHERE s.game_type = ? AND s.attraction_name = ?
+       ORDER BY s.datestamp DESC`,
+      [gameType, gameName]
+    );
+
+    res.json(rows); // matches frontend expectation
+  } catch (err) {
+    console.error('Score fetch error:', err);
+    res.status(500).json({ message: 'Database error' });
   }
-
-  const sorted = scores[gameType][gameName].sort((a, b) => new Date(b.datestamp) - new Date(a.datestamp));
-  res.json(sorted);
 });
 
-app.post('/api/scores/:gameType/:gameName', (req, res) => {
+app.post('/api/scores/:gameType/:gameName', async (req, res) => {
   const gameType = req.params.gameType.toLowerCase();
   const gameName = req.params.gameName.toLowerCase();
   const { user, score } = req.body;
@@ -169,25 +184,40 @@ app.post('/api/scores/:gameType/:gameName', (req, res) => {
     return res.status(400).json({ message: 'Vigased andmed' });
   }
 
-  const scores = loadScores();
+  try {
+    // Find user ID
+    const [userRows] = await pool.query(
+      'SELECT id FROM users WHERE name = ?',
+      [user]
+    );
+    const userRecord = userRows[0];
 
-  if (!scores[gameType]) {
-    scores[gameType] = {};
+    if (!userRecord) {
+      return res.status(400).json({ message: 'Kasutajat ei leitud' });
+    }
+
+    // Insert score
+    const [result] = await pool.query(
+      'INSERT INTO scores (user_id, game_type, attraction_name, score) VALUES (?, ?, ?, ?)',
+      [userRecord.id, gameType, gameName, score]
+    );
+
+    // Build response in same format as before
+    const newScore = {
+      user,
+      score,
+      datestamp: new Date().toISOString()
+    };
+
+    res.status(201).json({
+      message: `Skoor lisatud mängule "${gameType}/${gameName}"`,
+      score: newScore
+    });
+
+  } catch (err) {
+    console.error('Score insert error:', err);
+    res.status(500).json({ message: 'Database error' });
   }
-  if (!scores[gameType][gameName]) {
-    scores[gameType][gameName] = [];
-  }
-
-  const newScore = {
-    user,
-    score,
-    datestamp: new Date().toISOString()
-  };
-
-  scores[gameType][gameName].push(newScore);
-  saveScores(scores);
-
-  res.status(201).json({ message: `Skoor lisatud mängule "${gameType}/${gameName}"`, score: newScore });
 });
 
 
@@ -234,8 +264,6 @@ app.put('/api/gamedata/:attraction', (req, res) => {
     res.status(500).json({ message: 'Failed to save game data', error });
   }
 });
-
-
 
 initDB().then(() => {
   app.listen(PORT, () => {
