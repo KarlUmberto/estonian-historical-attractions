@@ -1,9 +1,9 @@
 import { useState, useEffect, useContext } from 'react';
 import { useParams } from 'react-router-dom';
-import WordleGame from './components/Wordle';
-import Modal from "./components/Modal";
-import EditAttractionGameData from './components/EditAttractionGameData';
-import UserContext from './components/UserContext';
+import WordleGame from '../components/Wordle';
+import Modal from "../components/Modal";
+import EditAttractionGameData from '../components/EditAttractionGameData';
+import UserContext from '../components/UserContext';
 
 const InfoPage = () => {
   const { user } = useContext(UserContext);

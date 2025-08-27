@@ -11,7 +11,8 @@ import {
   Link,
   useNavigate
 } from 'react-router-dom';
-import InfoPage from './InfoPage';
+import InfoPage from './views/InfoPage';
+import Leaderboard from './views/Leaderboard';
 import Auth from './Auth';
 import UserContext from './components/UserContext'
 import PrivateRoute from './components/PrivateRoute';
@@ -138,6 +139,19 @@ function App() {
             Eesti Ajaloolised Vaatamisväärsused
           </Link>
 
+          <Link
+            to="/leaderboard"
+            style={{
+              color: 'white',
+              textDecoration: 'none',
+              padding: '8px 15px',
+              borderRadius: '4px',
+              transition: 'background-color 0.3s'
+            }}
+          >
+            Skoorid
+          </Link>
+
           {user && (<p>{user.name}, {user.role}</p>)}
           {!isLoggedIn ? 
           <Link 
@@ -195,6 +209,11 @@ function App() {
             </PrivateRoute>
             } />
           <Route path="/" element={<Auth onLogin={handleLogin} />} />
+          <Route path="/leaderboard" element={
+            <PrivateRoute allowedRoles={["õpilane","õpetaja"]}>
+              <Leaderboard/>
+            </PrivateRoute>
+          }/>
         </Routes>
       </Router>
     </UserContext.Provider>

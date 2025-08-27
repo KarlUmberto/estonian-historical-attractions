@@ -168,7 +168,23 @@ app.get('/api/scores/:gameType/:gameName', async (req, res) => {
       [gameType, gameName]
     );
 
-    res.json(rows); // matches frontend expectation
+    res.json(rows);
+  } catch (err) {
+    console.error('Score fetch error:', err);
+    res.status(500).json({ message: 'Database error' });
+  }
+});
+
+app.get('/api/scores', async (req, res) => {
+  try {
+    const [rows] = await pool.query(
+      `SELECT u.name AS user, s.attraction_name, s.game_type, s.score, s.datestamp
+       FROM scores s
+       JOIN users u ON s.user_id = u.id
+       ORDER BY s.datestamp DESC`,
+    );
+
+    res.json(rows);
   } catch (err) {
     console.error('Score fetch error:', err);
     res.status(500).json({ message: 'Database error' });
