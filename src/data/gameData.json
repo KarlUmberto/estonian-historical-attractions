@@ -11,9 +11,29 @@
     },
     "choice": [
       {
-        "sentence": "Karl on _",
-        "choices": ["lahe","mitte lahe"],
-        "answer": "lahe"
+        "sentence": "Kas karl on lahe?",
+        "choices": [
+          "jah!",
+          "eeehhh"
+        ],
+        "answer": "jah!"
+      },
+      {
+        "sentence": "karl on lahe",
+        "choices": [
+          "karl on lahe",
+          "ei ole lahe"
+        ],
+        "answer": "karl on lahe"
+      },
+      {
+        "sentence": "Idk man",
+        "choices": [
+          "WHAAAT",
+          "eiiii",
+          "eii"
+        ],
+        "answer": "WHAAAT"
       }
     ]
   },
