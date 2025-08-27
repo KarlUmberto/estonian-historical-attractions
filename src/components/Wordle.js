@@ -3,7 +3,7 @@ import words from './eesti-sonad.json'
 import UserContext from './UserContext';
 import { useContext } from 'react';
 
-const WordleGame = ({ targetWord, relatedWords, gameName }) => {
+const WordleGame = ({ targetWord, relatedWords, attractionName }) => {
   const MAX_ATTEMPTS = 6;
   
   const [guesses, setGuesses] = useState([]);
@@ -23,10 +23,10 @@ const WordleGame = ({ targetWord, relatedWords, gameName }) => {
 
   useEffect(() => {
     const fetchScores = async () => {
-      if (!gameName) return; // don't fetch if gameName is missing
+      if (!attractionName) return;
 
       try {
-        const response = await fetch(`http://localhost:5000/api/scores/wordle/${gameName.toLowerCase()}`);
+        const response = await fetch(`http://localhost:5000/api/scores/wordle/${attractionName.toLowerCase()}`);
         const data = await response.json();
 
         if (response.ok && Array.isArray(data)) {
@@ -40,7 +40,7 @@ const WordleGame = ({ targetWord, relatedWords, gameName }) => {
     };
 
     fetchScores();
-  }, [gameName]);
+  }, [attractionName]);
 
   const handleGuess = async () => {
     if (!words.includes(currentGuess.toLowerCase())) {
@@ -72,7 +72,7 @@ const WordleGame = ({ targetWord, relatedWords, gameName }) => {
 
     if (playerScore != null) {
       try {
-        const response = await fetch(`http://localhost:5000/api/scores/wordle/${gameName.toLowerCase()}`, {
+        const response = await fetch(`http://localhost:5000/api/scores/wordle/${attractionName.toLowerCase()}`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'

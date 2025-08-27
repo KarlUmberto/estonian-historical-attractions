@@ -8,7 +8,14 @@
         "hoone",
         "gootika"
       ]
-    }
+    },
+    "choice": [
+      {
+        "sentence": "Karl on _",
+        "choices": ["lahe","mitte lahe"],
+        "answer": "lahe"
+      }
+    ]
   },
   "Mati Undi muuseum": {
     "wordle": {

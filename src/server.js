@@ -191,9 +191,9 @@ app.get('/api/scores', async (req, res) => {
   }
 });
 
-app.post('/api/scores/:gameType/:gameName', async (req, res) => {
+app.post('/api/scores/:gameType/:attractionName', async (req, res) => {
   const gameType = req.params.gameType.toLowerCase();
-  const gameName = req.params.gameName.toLowerCase();
+  const attractionName = req.params.attractionName.toLowerCase();
   const { user, score } = req.body;
 
   if (!user || !score) {
@@ -215,7 +215,7 @@ app.post('/api/scores/:gameType/:gameName', async (req, res) => {
     // Insert score
     const [result] = await pool.query(
       'INSERT INTO scores (user_id, game_type, attraction_name, score) VALUES (?, ?, ?, ?)',
-      [userRecord.id, gameType, gameName, score]
+      [userRecord.id, gameType, attractionName, score]
     );
 
     // Build response in same format as before
@@ -226,7 +226,7 @@ app.post('/api/scores/:gameType/:gameName', async (req, res) => {
     };
 
     res.status(201).json({
-      message: `Skoor lisatud mängule "${gameType}/${gameName}"`,
+      message: `Skoor lisatud mängule "${gameType}/${attractionName}"`,
       score: newScore
     });
 

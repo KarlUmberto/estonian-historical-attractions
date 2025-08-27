@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import WordleGame from '../components/Wordle';
+import SentenceChoice from '../components/SentenceChoice'
 import Modal from "../components/Modal";
 import EditAttractionGameData from '../components/EditAttractionGameData';
 import UserContext from '../components/UserContext';
@@ -11,11 +12,15 @@ const InfoPage = () => {
   const { name, info } = useParams();
   const [wordData, setWordData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [showWordle, setShowWordle] = useState(false);
+  const [selectedGame, setSelectedGame] = useState("")
   const [showEditModal, setShowEditModal] = useState(false)
 
   const toggleWordle = () => {
-    setShowWordle(!showWordle);
+    setSelectedGame(selectedGame !== "wordle" ? "wordle" : "")
+  };
+
+  const toggleChoice = () => {
+    setSelectedGame(selectedGame !== "choice" ? "choice" : "")
   };
 
   useEffect(() => {
@@ -36,6 +41,7 @@ const InfoPage = () => {
         } else {
           const data = await response.json();
           setWordData(data);
+          console.log(data.choice)
         }
       } catch (error) {
         setWordData(null);
@@ -66,26 +72,47 @@ const InfoPage = () => {
           </button>
         </div>
         )}
-        
-        
-
       </div>
+
+      {wordData !== null && wordData?.choice && 
+      <>
+          <button onClick={toggleChoice}>
+            {selectedGame==="choice" ? 'Peida küsitlus' : 'Mängi küsitlust'}
+          </button>
+      </>
+      }
+
       {wordData !== null && wordData?.wordle?.word !== "" && 
         <>
           <button onClick={toggleWordle}>
-            {showWordle ? 'Peida Wordle' : 'Mängi Wordle'}
+            {selectedGame==="wordle" ? 'Peida Wordle' : 'Mängi Wordle'}
           </button>
+        </>
+      }
 
-          <div className={showWordle ? 'visible' : 'hidden'}>
+      {wordData !== null && wordData?.wordle?.word !== "" && 
+        <>
+          <div className={selectedGame==="wordle" ? 'visible' : 'hidden'}>
             <WordleGame
               targetWord={wordData.wordle.word}
               relatedWords={wordData.wordle.relatedWords}
-              gameName={decodeURIComponent(name)}
+              attractionName={decodeURIComponent(name)}
               key={wordData.wordle.word}
             />
           </div>
         </>
       }
+
+      {wordData !== null && wordData?.choice && 
+      <>
+          <div className={selectedGame==="choice" ? 'visible' : 'hidden'}>
+            <SentenceChoice
+              attractionName={decodeURIComponent(name)}
+              choiceGameInfo={wordData.choice}
+              key={name+"-choice"}
+            />
+          </div>
+      </>}
       
       <Modal isOpen={showEditModal} onClose={() => setShowEditModal(false)}>
         <EditAttractionGameData
