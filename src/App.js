@@ -161,7 +161,7 @@ function App() {
               onMouseOver={(e) => (e.target.style.backgroundColor = "#34495e")}
               onMouseOut={(e) => (e.target.style.backgroundColor = "transparent")}
             >
-              Skoorid
+              Edetabel
             </Link>
           </div>
 
