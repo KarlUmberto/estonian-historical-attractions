@@ -8,7 +8,6 @@ const SentenceChoice = ({ choiceGameInfo, attractionName }) => {
   const [submitted, setSubmitted] = useState(false);
   const [score, setScore] = useState(null);
 
-  // Fetch scores for leaderboard
   useEffect(() => {
     const fetchScores = async () => {
       if (!attractionName) return;
@@ -46,7 +45,6 @@ const SentenceChoice = ({ choiceGameInfo, attractionName }) => {
     setScore(result);
     setSubmitted(true);
 
-    // Send score to backend
     try {
       const response = await fetch(
         `http://localhost:5000/api/scores/choice/${attractionName.toLowerCase()}`,
@@ -66,7 +64,6 @@ const SentenceChoice = ({ choiceGameInfo, attractionName }) => {
       if (!response.ok) {
         console.error('Failed to save score:', data.message);
       } else {
-        // Update local leaderboard
         setScores((prev) =>
           [data.score, ...prev].sort(
             (a, b) => new Date(b.datestamp) - new Date(a.datestamp)

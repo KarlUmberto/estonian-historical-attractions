@@ -113,64 +113,100 @@ function App() {
   return (
     <UserContext.Provider value={{ user, setUser }}>
       <Router>
-        <nav style={{
-          backgroundColor: '#2c3e50',
-          padding: '15px 30px',
-          color: 'white',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          zIndex: 1000
-        }}>
-          <Link 
-            to="/kaart" 
+        <nav
+          style={{
+            backgroundColor: "#2c3e50",
+            padding: "12px 30px",
+            color: "white",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            zIndex: 1000,
+            boxShadow: "0 2px 6px rgba(0,0,0,0.3)",
+          }}
+        >
+          <div
             style={{
-              color: 'white',
-              textDecoration: 'none',
-              padding: '8px 15px',
-              borderRadius: '4px',
-              transition: 'background-color 0.3s'
+              display: "flex",
+              alignItems: "center",
+              gap: "20px",
             }}
           >
-            Eesti Ajaloolised Vaatamisväärsused
-          </Link>
+            <Link
+              to="/kaart"
+              style={{
+                color: "white",
+                textDecoration: "none",
+                fontSize: "18px",
+                fontWeight: "600",
+                padding: "6px 12px",
+              }}
+            >
+              Eesti Ajaloolised Vaatamisväärsused
+            </Link>
 
-          <Link
-            to="/leaderboard"
-            style={{
-              color: 'white',
-              textDecoration: 'none',
-              padding: '8px 15px',
-              borderRadius: '4px',
-              transition: 'background-color 0.3s'
-            }}
-          >
-            Skoorid
-          </Link>
+            <Link
+              to="/leaderboard"
+              style={{
+                color: "white",
+                textDecoration: "none",
+                padding: "6px 12px",
+                borderRadius: "6px",
+                transition: "all 0.3s ease",
+              }}
+              onMouseOver={(e) => (e.target.style.backgroundColor = "#34495e")}
+              onMouseOut={(e) => (e.target.style.backgroundColor = "transparent")}
+            >
+              Skoorid
+            </Link>
+          </div>
 
-          {user && (<p>{user.name}, {user.role}</p>)}
-          {!isLoggedIn ? 
-          <Link 
-            to="/" 
+          <div
             style={{
-              color: 'white',
-              textDecoration: 'none',
-              padding: '8px 15px',
-              borderRadius: '4px',
-              backgroundColor: '#3498db',
-              transition: 'background-color 0.3s'
+              display: "flex",
+              alignItems: "center",
+              gap: "15px",
             }}
           >
-            Logi sisse
-          </Link>
-          :
-          <LogoutButton onLogout={handleLogout} />
-          }
+            {user && (
+              <span
+                style={{
+                  fontSize: "14px",
+                  color: "#ecf0f1",
+                }}
+              >
+                {user.name}, {user.role}
+              </span>
+            )}
+
+            {!isLoggedIn ? (
+              <Link
+                to="/"
+                style={{
+                  color: "white",
+                  textDecoration: "none",
+                  padding: "8px 15px",
+                  borderRadius: "6px",
+                  backgroundColor: "#3498db",
+                  fontWeight: "500",
+                  transition: "background-color 0.3s ease",
+                }}
+                onMouseOver={(e) => (e.target.style.backgroundColor = "#2980b9")}
+                onMouseOut={(e) => (e.target.style.backgroundColor = "#3498db")}
+              >
+                Logi sisse
+              </Link>
+            ) : (
+              <LogoutButton onLogout={handleLogout} />
+            )}
+          </div>
         </nav>
+
+
 
         <Routes>
           <Route path="/kaart" element={
