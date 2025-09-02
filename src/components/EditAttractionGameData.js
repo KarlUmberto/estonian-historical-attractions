@@ -57,7 +57,6 @@ const EditAttractionGameData = ({ attractionName, existingGameData, onSave }) =>
     if (expandedQuestion === index) setExpandedQuestion(null);
   };
 
-  /** SUBMIT */
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSaving(true);
@@ -99,18 +98,18 @@ const EditAttractionGameData = ({ attractionName, existingGameData, onSave }) =>
 
   return (
     <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", maxWidth: 800 }}>
-      <h3>Edit game data for "{attractionName}"</h3>
+      <h3>Muuda "{attractionName}" andmeid</h3>
 
       {/* Wordle Section */}
       <div style={{ marginBottom: 20 }}>
         <h4>Wordle</h4>
         <label>
-          Word:
+          Vastus:
           <input type="text" value={word} onChange={(e) => setWord(e.target.value)} />
         </label>
 
         <div>
-          <label>Related Words:</label>
+          <label>Vihjed:</label>
           {relatedWords.map((relatedWord, idx) => (
             <div key={idx} style={{ display: "flex", marginBottom: 4 }}>
               <input
@@ -125,14 +124,14 @@ const EditAttractionGameData = ({ attractionName, existingGameData, onSave }) =>
             </div>
           ))}
           <button type="button" onClick={addRelatedWord}>
-            + Add related word
+            + Lisa vihje
           </button>
         </div>
       </div>
 
       {/* Sentence Choice Section */}
       <div style={{ marginBottom: 20 }}>
-        <h4>Sentence Choice Questions</h4>
+        <h4>Küsimused</h4>
         <div style={{ maxHeight: 400, overflowY: "auto", border: "1px solid #ddd", padding: 10 }}>
           {choiceQuestions.map((q, qIndex) => (
             <div key={qIndex} style={{ border: "1px solid #ccc", marginBottom: 10 }}>
@@ -142,13 +141,13 @@ const EditAttractionGameData = ({ attractionName, existingGameData, onSave }) =>
                   setExpandedQuestion(expandedQuestion === qIndex ? null : qIndex)
                 }
               >
-                Question {qIndex + 1}: {q.sentence || "No sentence yet"}
+                Küsimus {qIndex + 1}: {q.sentence || "No sentence yet"}
               </div>
 
               {expandedQuestion === qIndex && (
                 <div style={{ padding: 10 }}>
                   <label>
-                    Sentence:
+                    Küsimus:
                     <input
                       type="text"
                       value={q.sentence}
@@ -160,7 +159,7 @@ const EditAttractionGameData = ({ attractionName, existingGameData, onSave }) =>
                   </label>
 
                   <label>
-                    Correct Answer:
+                    Õige vastus:
                     <input
                       type="text"
                       value={q.answer}
@@ -172,7 +171,7 @@ const EditAttractionGameData = ({ attractionName, existingGameData, onSave }) =>
                   </label>
 
                   <div style={{ marginTop: 10 }}>
-                    <label>Choices:</label>
+                    <label>Valikud:</label>
                     <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
                       {q.choices.map((choice, cIndex) => (
                         <div key={cIndex} style={{ display: "flex", alignItems: "center" }}>
@@ -194,7 +193,7 @@ const EditAttractionGameData = ({ attractionName, existingGameData, onSave }) =>
                       ))}
                     </div>
                     <button type="button" onClick={() => addChoiceOption(qIndex)} style={{ marginTop: 5 }}>
-                      + Add choice
+                      + Lisa valik
                     </button>
                   </div>
 
@@ -203,14 +202,14 @@ const EditAttractionGameData = ({ attractionName, existingGameData, onSave }) =>
                     onClick={() => removeChoiceQuestion(qIndex)}
                     style={{ marginTop: 10 }}
                   >
-                    Remove Question
+                    Eemalda
                   </button>
                 </div>
               )}
             </div>
           ))}
           <button type="button" onClick={addChoiceQuestion}>
-            + Add new question
+            + Lisa uus küsimus
           </button>
         </div>
       </div>
@@ -220,7 +219,7 @@ const EditAttractionGameData = ({ attractionName, existingGameData, onSave }) =>
       {/* Sticky Save Button */}
       <div style={{ position: "sticky", bottom: 0, background: "#fff", padding: 10, borderTop: "1px solid #ccc" }}>
         <button type="submit" disabled={saving}>
-          {saving ? "Saving..." : "Save"}
+          {saving ? "Salvestab..." : "Salvesta"}
         </button>
       </div>
     </form>

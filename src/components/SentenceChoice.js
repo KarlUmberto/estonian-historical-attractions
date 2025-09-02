@@ -81,7 +81,6 @@ const SentenceChoice = ({ choiceGameInfo, attractionName }) => {
 
   return (
     <div>
-      <h2>{attractionName} - Sentence Choice</h2>
 
       {choiceGameInfo.map((q, index) => (
         <div key={index} style={{ marginBottom: '1rem' }}>
@@ -106,7 +105,7 @@ const SentenceChoice = ({ choiceGameInfo, attractionName }) => {
 
       {!submitted && (
         <button onClick={handleSubmit} style={{ marginTop: '1rem' }}>
-          Submit
+          Kinnita
         </button>
       )}
 

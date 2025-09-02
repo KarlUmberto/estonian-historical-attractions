@@ -59,61 +59,141 @@ const InfoPage = () => {
   }
 
   return (
-    <div className="info-page">
+    <div
+      className="info-page"
+      style={{
+        maxWidth: "800px",
+        margin: "80px auto 40px auto", // spacing under navbar
+        padding: "20px",
+        backgroundColor: "#f9f9f9",
+        borderRadius: "12px",
+        boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
+      }}
+    >
+      <div
+        className="text-container"
+        style={{
+          marginBottom: "20px",
+        }}
+      >
+        <h1
+          style={{
+            fontSize: "28px",
+            fontWeight: "700",
+            color: "#2c3e50",
+            marginBottom: "12px",
+          }}
+        >
+          {decodeURIComponent(name)}
+        </h1>
 
-      <div className="text-container">
-        <h1>{decodeURIComponent(name)}</h1>
-        <p className="text">{info === "undefined" || !info ? "Info puudub." : decodeURIComponent(info)}</p>        
+        <p
+          className="text"
+          style={{
+            fontSize: "16px",
+            lineHeight: "1.6",
+            color: "#34495e",
+            marginBottom: "20px",
+          }}
+        >
+          {info === "undefined" || !info
+            ? "Info puudub."
+            : decodeURIComponent(info)}
+        </p>
+
         {user.role === "õpetaja" && (
-        <div>
-          <p>Lisa või muuda atraktsiooni mänge:</p>
-          <button onClick={() => setShowEditModal(true)}>
-            Tee seda mis kirjeldati üleval
-          </button>
-        </div>
+          <div
+            style={{
+              marginTop: "15px",
+              padding: "15px",
+              backgroundColor: "#ecf0f1",
+              borderRadius: "8px",
+            }}
+          >
+            <button
+              onClick={() => setShowEditModal(true)}
+              style={{
+                padding: "10px 18px",
+                backgroundColor: "#3498db",
+                color: "white",
+                border: "none",
+                borderRadius: "6px",
+                cursor: "pointer",
+                fontSize: "14px",
+                transition: "background-color 0.3s ease",
+              }}
+              onMouseOver={(e) => (e.target.style.backgroundColor = "#2980b9")}
+              onMouseOut={(e) => (e.target.style.backgroundColor = "#3498db")}
+            >
+              Lisa/muuda attraktsiooni mänge
+            </button>
+          </div>
         )}
       </div>
 
-      {wordData !== null && wordData?.choice && 
-      <>
-          <button onClick={toggleChoice}>
-            {selectedGame==="choice" ? 'Peida küsitlus' : 'Mängi küsitlust'}
-          </button>
-      </>
-      }
+      {wordData !== null && wordData?.choice && (
+        <button
+          onClick={toggleChoice}
+          style={{
+            padding: "10px 18px",
+            margin: "10px 10px 10px 0",
+            backgroundColor: "#27ae60",
+            color: "white",
+            border: "none",
+            borderRadius: "6px",
+            cursor: "pointer",
+            fontSize: "14px",
+            transition: "background-color 0.3s ease",
+          }}
+          onMouseOver={(e) => (e.target.style.backgroundColor = "#1e8449")}
+          onMouseOut={(e) => (e.target.style.backgroundColor = "#27ae60")}
+        >
+          {selectedGame === "choice" ? "Peida küsitlus" : "Mängi küsitlust"}
+        </button>
+      )}
 
-      {wordData !== null && wordData?.wordle?.word !== "" && 
-        <>
-          <button onClick={toggleWordle}>
-            {selectedGame==="wordle" ? 'Peida Wordle' : 'Mängi Wordle'}
-          </button>
-        </>
-      }
+      {wordData !== null && wordData?.wordle?.word !== "" && (
+        <button
+          onClick={toggleWordle}
+          style={{
+            padding: "10px 18px",
+            margin: "10px 10px 10px 0",
+            backgroundColor: "#8e44ad",
+            color: "white",
+            border: "none",
+            borderRadius: "6px",
+            cursor: "pointer",
+            fontSize: "14px",
+            transition: "background-color 0.3s ease",
+          }}
+          onMouseOver={(e) => (e.target.style.backgroundColor = "#6c3483")}
+          onMouseOut={(e) => (e.target.style.backgroundColor = "#8e44ad")}
+        >
+          {selectedGame === "wordle" ? "Peida Wordle" : "Mängi Wordle"}
+        </button>
+      )}
 
-      {wordData !== null && wordData?.wordle?.word !== "" && 
-        <>
-          <div className={selectedGame==="wordle" ? 'visible' : 'hidden'}>
-            <WordleGame
-              targetWord={wordData.wordle.word}
-              relatedWords={wordData.wordle.relatedWords}
-              attractionName={decodeURIComponent(name)}
-              key={wordData.wordle.word}
-            />
-          </div>
-        </>
-      }
+      {wordData !== null && wordData?.wordle?.word !== "" && (
+        <div className={selectedGame === "wordle" ? "visible" : "hidden"}>
+          <WordleGame
+            targetWord={wordData.wordle.word}
+            relatedWords={wordData.wordle.relatedWords}
+            attractionName={decodeURIComponent(name)}
+            key={wordData.wordle.word}
+          />
+        </div>
+      )}
 
-      {wordData !== null && wordData?.choice && 
-      <>
-          <div className={selectedGame==="choice" ? 'visible' : 'hidden'}>
-            <SentenceChoice
-              attractionName={decodeURIComponent(name)}
-              choiceGameInfo={wordData.choice}
-              key={name+"-choice"}
-            />
-          </div>
-      </>}
-      
+      {wordData !== null && wordData?.choice && (
+        <div className={selectedGame === "choice" ? "visible" : "hidden"}>
+          <SentenceChoice
+            attractionName={decodeURIComponent(name)}
+            choiceGameInfo={wordData.choice}
+            key={name + "-choice"}
+          />
+        </div>
+      )}
+
       <Modal isOpen={showEditModal} onClose={() => setShowEditModal(false)}>
         <EditAttractionGameData
           attractionName={decodeURIComponent(name)}
@@ -121,12 +201,12 @@ const InfoPage = () => {
           onSave={(updatedData) => {
             setWordData(updatedData);
             setShowEditModal(false);
-          }
-          }
+          }}
         />
       </Modal>
     </div>
   );
+
 };
 
 export default InfoPage;
