@@ -11,29 +11,29 @@
     },
     "choice": [
       {
-        "sentence": "Kas karl on lahe?",
+        "sentence": "Test küsimus",
         "choices": [
-          "jah!",
-          "eeehhh"
+          "jah",
+          "vale"
         ],
-        "answer": "jah!"
+        "answer": "jah"
       },
       {
-        "sentence": "karl on lahe",
+        "sentence": "teine küsimus",
         "choices": [
-          "karl on lahe",
-          "ei ole lahe"
+          "õige",
+          "vale"
         ],
-        "answer": "karl on lahe"
+        "answer": "õige"
       },
       {
-        "sentence": "Idk man",
+        "sentence": "kolmas küsimus",
         "choices": [
-          "WHAAAT",
-          "eiiii",
-          "eii"
+          "vale 1",
+          "õige",
+          "vale 2"
         ],
-        "answer": "WHAAAT"
+        "answer": "õige"
       }
     ]
   },
